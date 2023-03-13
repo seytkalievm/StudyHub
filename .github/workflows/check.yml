@@ -1,0 +1,93 @@
+name: Flutter check
+
+on: [push, workflow_dispatch]
+
+jobs:
+  format:
+    name: Flutter formatter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up repository
+        uses: actions/checkout@v3
+      - name: Set up java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - name: Flutter pub get
+        run: flutter pub get
+      - name: Flutter formatter
+        run: flutter format lib
+
+  lint:
+    name: Flutter linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up repository
+        uses: actions/checkout@v3
+      - name: Set up java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - name: Flutter pub get
+        run: flutter pub get
+      - name: Flutter linter
+        run: flutter analyze lib
+
+  metrics:
+    name: Flutter code metrics
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up repository
+        uses: actions/checkout@v3
+      - name: Set up java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - name: Flutter pub get
+        run: flutter pub get
+      - name: Run Code Metrics
+        uses: dart-code-checker/dart-code-metrics-action@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  summary:
+    needs: [format, lint, metrics]
+    name: Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print format success
+        if: needs.format.result == 'success'
+        run: |
+          echo ":heavy_check_mark: **Format passed**" >> $GITHUB_STEP_SUMMARY
+      - name: Print format failure
+        if: needs.format.result == 'failure'
+        run: |
+          echo ":x: **Format failed**" >> $GITHUB_STEP_SUMMARY
+      - name: Print linter success
+        if: needs.lint.result == 'success'
+        run: |
+          echo ":heavy_check_mark: **Linter passed**" >> $GITHUB_STEP_SUMMARY
+      - name: Print linter failure
+        if: needs.lint.result == 'failure'
+        run: |
+          echo ":x: **Linter failed**" >> $GITHUB_STEP_SUMMARY
+      - name: Print code metrics success
+        if: needs.metrics.result == 'success'
+        run: |
+          echo ":heavy_check_mark: **Code metrics generated**" >> $GITHUB_STEP_SUMMARY
+      - name: Print code metrics failure
+        if: needs.metrics.result == 'failure'
+        run: |
+          echo ":x: **Code metrics generation failed**" >> $GITHUB_STEP_SUMMARY
