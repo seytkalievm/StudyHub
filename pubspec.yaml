@@ -38,6 +38,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: ^4.6.5
   flutter_svg: ^1.1.5
+  http: ^0.13.5
+  get_storage: ^2.0.3
+  image_picker: ^0.8.6
+  http_parser: ^4.0.2
 
 dev_dependencies:
   flutter_test:
@@ -49,7 +53,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-
+  dart_code_metrics: ^4.21.2
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -66,6 +70,9 @@ flutter:
     - assets/
     - assets/icons/bottom_bar/
     - assets/images/
+    - assets/icons/create_page/
+    - assets/icons/create_cards/
+    - assets/icons/deck_preview/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
