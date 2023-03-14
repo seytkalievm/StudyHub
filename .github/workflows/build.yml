@@ -11,7 +11,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@v1.1.0
         id: wait-for-check
         with:
-          token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           checkName: Conclusion
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           intervalSeconds: 60
