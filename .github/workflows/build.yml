@@ -93,26 +93,3 @@ jobs:
         with:
           name: ios-build
           path: build/ios/iphoneos
-
-  report:
-    needs: [build_apk, build_ios, build_web]
-    name: Send report
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send telegram message on build failure
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_ID }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: |
-            Repository: ${{ github.repository }}
-            Push to main branch
-
-            APK build result: ${{needs.build_apk.result}}
-            iOS build result: ${{needs.build_ios.result}}
-            Web build result: ${{needs.build_web.result}}
-            
-            ${{ github.actor }} created commit:
-            Commit message: ${{ github.event.commits[0].message }}
-            
-            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
