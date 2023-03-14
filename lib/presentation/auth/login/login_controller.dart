@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:study_hub/model/models/resource.dart';
+import '../../../domain/use_case/auth/login_wtih_iu_use_case.dart';
 import '../../../model/repository/auth_repository.dart';
 import '../../util/routes.dart';
 
@@ -69,5 +70,20 @@ class LoginController extends GetxController {
     update();
 
     return isValid;
+  }
+
+  void loginWithIU() async {
+    isLoading = true;
+    var response = await LoginWithIUUseCase.invoke();
+    debugPrint(response.toString());
+    if (response is Success) {
+      isLoading = false;
+      update();
+      Get.offNamed(AppRoutes.session);
+    } else {
+      snackBarError = response.message.toString();
+      isLoading = false;
+      update();
+    }
   }
 }

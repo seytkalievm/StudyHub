@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:study_hub/model/models/create_card.dart';
 
-class FullscreenImage extends StatelessWidget {
-  const FullscreenImage({
+class FullscreenImageCreate extends StatelessWidget {
+  const FullscreenImageCreate({
     Key? key,
     required this.card,
     required this.isQuestion,

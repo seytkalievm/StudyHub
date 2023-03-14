@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../domain/use_case/auth/login_wtih_iu_use_case.dart';
+import '../../../model/models/resource.dart';
 import '../../util/color_codes.dart';
 import '../../util/routes.dart';
 
@@ -53,8 +55,12 @@ class WelcomeScreen extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 68.0, left: 20, right: 20),
                 height: 44,
                 child: MaterialButton(
-                  onPressed: () {
-                    //TODO
+                  onPressed: () async {
+                    var response = await LoginWithIUUseCase.invoke();
+                    debugPrint(response.toString());
+                    if (response is Success) {
+                      Get.offNamed(AppRoutes.session);
+                    }
                   },
                   color: selectedMenuColor,
                   child: Row(

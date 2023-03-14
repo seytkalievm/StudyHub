@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'for_you/for_you_controller.dart';
 import 'recent/recent_controller.dart';
-import 'search/search_controller.dart';
 
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -10,10 +9,9 @@ class HomeController extends GetxController
 
   @override
   void onInit() {
-    tabController = TabController(vsync: this, length: 3);
-    Get.lazyPut<RecentController>(() => RecentController());
-    Get.lazyPut<ForYouController>(() => ForYouController());
-    Get.lazyPut<SearchController>(() => SearchController());
+    tabController = TabController(vsync: this, length: 2);
+    Get.put<RecentController>(RecentController(), permanent: true);
+    Get.put<ForYouController>(ForYouController(), permanent: true);
 
     super.onInit();
   }

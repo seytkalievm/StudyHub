@@ -3,8 +3,7 @@ import 'package:get/get.dart';
 import 'package:study_hub/model/models/create_card.dart';
 import 'package:study_hub/model/models/create_deck.dart';
 import 'package:study_hub/model/models/resource.dart';
-import 'package:study_hub/model/repository/auth_repository.dart';
-import 'package:study_hub/model/repository/deck_repository.dart';
+import '../../../../domain/use_case/deck/create_deck_use_case.dart';
 import '../../../util/color_codes.dart';
 
 class AddCardsController extends GetxController {
@@ -14,8 +13,6 @@ class AddCardsController extends GetxController {
     addCard();
   }
 
-  final deckRepo = Get.find<DeckRepository>();
-  final authRepo = Get.find<AuthRepository>();
   List<CreateCard> cardModels = [];
 
   void addCard() {
@@ -55,11 +52,8 @@ class AddCardsController extends GetxController {
   void finish() async {
     if (!validateAll()) return;
 
-    var accessToken = await authRepo.refresh();
-    if (accessToken is Fail) return;
-
     showLoadingIndicator();
-    var result = await deckRepo.uploadDeck(deck, accessToken.data!);
+    var result = await CreateDeckUseCase.invoke(deck);
     Navigator.of(Get.overlayContext!).pop();
 
     if (result is Success) {

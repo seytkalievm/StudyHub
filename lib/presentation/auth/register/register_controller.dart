@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:study_hub/common/constants.dart';
+import '../../../domain/use_case/auth/login_wtih_iu_use_case.dart';
 import '../../../model/models/resource.dart';
 import '../../../model/repository/auth_repository.dart';
+import '../../util/routes.dart';
 
 class RegisterController extends GetxController {
   AuthRepository authRepo = Get.find();
@@ -62,7 +64,10 @@ class RegisterController extends GetxController {
     );
 
     if (response is Success) {
-      Get.back();
+      //Get.back();
+      isLoading = false;
+      update();
+      Get.offAllNamed(AppRoutes.session);
     }
     if (response is Fail) {
       if (response.errorCode == registerCredentialsAlreadyExistCode) {
@@ -99,12 +104,26 @@ class RegisterController extends GetxController {
   }
 
   validatePassword() {
-    passwordError = _password.length <= 8
+    passwordError = _password.length < 8
         ? "Password must be at least 8 characters long"
         : null;
   }
 
   validateFullName() {
     fullNameError = _fullName.isEmpty ? "Full Name cannot be empty" : null;
+  }
+
+  void loginWithIU() async {
+    isLoading = true;
+    var response = await LoginWithIUUseCase.invoke();
+    if (response is Success) {
+      isLoading = false;
+      update();
+      Get.offNamed(AppRoutes.session);
+    } else {
+      snackBarError = response.message.toString();
+      isLoading = false;
+      update();
+    }
   }
 }

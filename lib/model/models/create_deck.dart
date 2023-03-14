@@ -20,7 +20,7 @@ class CreateDeck {
     }
 
     var json = {
-      "folder_id": 1,
+      "folder_id": folderId,
       "deck_name": deckName,
       "semester": semester,
       "cards": cards,

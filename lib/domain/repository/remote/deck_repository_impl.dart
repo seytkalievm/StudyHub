@@ -4,11 +4,14 @@ import 'package:get/get.dart';
 import 'package:study_hub/common/constants.dart';
 import 'package:study_hub/model/models/create_deck.dart';
 import 'package:study_hub/model/models/deck.dart';
+import 'package:study_hub/model/models/folder.dart';
 import 'package:study_hub/model/models/resource.dart';
+import 'package:study_hub/model/models/search_result.dart';
 import 'package:study_hub/model/repository/auth_repository.dart';
 import 'package:study_hub/model/repository/deck_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import '../../../model/models/search_query.dart';
 
 class DeckRepositoryImpl implements DeckRepository {
   final AuthRepository authRepo = Get.find();
@@ -17,14 +20,15 @@ class DeckRepositoryImpl implements DeckRepository {
     var response = await authRepo.refresh();
     if (response is Success) {
       return Success(
-          successData: {"Authorization": "Bearer ${response.data!}"});
+        successData: {"Authorization": "Bearer ${response.data!}"},
+      );
     }
 
     return Fail(errorMessage: "couldn't update access token");
   }
 
   @override
-  Future<Resource<Deck>> uploadDeck(CreateDeck deck, String accessToken) async {
+  Future<Resource<Deck>> uploadDeck(CreateDeck deck) async {
     http.StreamedResponse? response;
     final url = Uri.parse("$serverIP/deck/create/");
     final data = jsonEncode(deck.toJson());
@@ -57,7 +61,7 @@ class DeckRepositoryImpl implements DeckRepository {
 
       return Success(successData: newDeck);
     } catch (error) {
-      debugPrint("deck repository, uploadDeck 64. Error: ${error.toString()}");
+      //debugPrint("deck repository, uploadDeck 64. Error: ${error.toString()}");
 
       return Fail(errorMessage: error.toString());
     }
@@ -91,12 +95,12 @@ class DeckRepositoryImpl implements DeckRepository {
   }
 
   @override
-  Future<Resource<List<Deck>>> getDecks(String accessToken) async {
+  Future<Resource<List<Deck>>> getDecks() async {
     return requestForDeck(url: Uri.parse("$serverIP/user/decks/get/"));
   }
 
   @override
-  Future<Resource<List<Deck>>> getFavourites(String accessToken) {
+  Future<Resource<List<Deck>>> getFavourites() {
     return requestForDeck(url: Uri.parse("$serverIP/user/favourite/get/"));
   }
 
@@ -125,8 +129,8 @@ class DeckRepositoryImpl implements DeckRepository {
       List<Deck> decks = [];
       List decksListJson = json.decode(response.body);
 
-      for (var deckJson in decksListJson) {
-        decks.add(Deck.fromJson(deckJson));
+      for (var i = decksListJson.length - 1; i >= 0; i--) {
+        decks.add(Deck.fromJson(decksListJson[i]));
       }
 
       return Success(successData: decks);
@@ -206,6 +210,128 @@ class DeckRepositoryImpl implements DeckRepository {
       debugPrint("removed deck ${deck.id} from favourites");
       if (statusCode == 403) {
         return Fail(errorMessage: "Deck is already not favourite");
+      }
+
+      return Fail(errorMessage: "Unexpected error");
+    }
+  }
+
+  @override
+  Future<Resource<List<Folder>>> getFolderList() async {
+    var credentialsResponse = await getAuthorizationHeader();
+    if (credentialsResponse is Fail) {
+      return Fail(errorMessage: credentialsResponse.message!);
+    }
+
+    var credentials = credentialsResponse.data!;
+
+    var headers = {"Content-Type": "application/json"};
+    headers.addAll(credentials);
+    var url = Uri.parse("$serverIP/folder/list/");
+    http.Response response;
+
+    try {
+      response = await http.get(url, headers: headers);
+    } catch (error) {
+      debugPrint("deck repository, getFolderList. Error: ${error.toString()}");
+
+      return Fail(errorMessage: error.toString());
+    }
+
+    var statusCode = response.statusCode;
+
+    if (statusCode == 200) {
+      List<Folder> folders = [];
+      List decksListJson = json.decode(response.body);
+      debugPrint(response.body);
+
+      for (var i = decksListJson.length - 1; i >= 0; i--) {
+        folders.add(Folder.fromJson(decksListJson[i]));
+      }
+
+      return Success(successData: folders);
+    } else {
+      debugPrint(response.body);
+
+      return Fail(errorMessage: response.body);
+    }
+  }
+
+  @override
+  Future<Resource<Deck>> uploadDeckFromSheet(
+    CreateDeck deck,
+    String link,
+  ) async {
+    http.Response? response;
+    final url = Uri.parse("$serverIP/deck/createFromSheet/");
+    final body = jsonEncode({
+      "folder_id": deck.folderId,
+      "deck_name": deck.deckName,
+      "semester": deck.semester,
+      "url": link,
+    });
+    var credentialsResponse = await getAuthorizationHeader();
+    if (credentialsResponse is Fail) {
+      return Fail(errorMessage: credentialsResponse.message!);
+    }
+
+    var headers = {"Content-Type": "application/json"};
+    var credentials = credentialsResponse.data!;
+
+    headers.addAll(credentials);
+
+    try {
+      response = await http.post(url, headers: headers, body: body);
+    } catch (e) {
+      return Fail(errorMessage: e.toString());
+    }
+
+    if (response.statusCode == 201) {
+      var deckStr = response.body;
+      var newDeck = Deck.fromJson(json.decode(deckStr));
+
+      return Success(successData: newDeck);
+    } else {
+      return Fail(
+        statusCode: response.statusCode,
+        errorMessage: response.body,
+      );
+    }
+  }
+
+  @override
+  Future<Resource<SearchResult>> search(SearchQuery query) async {
+    var credentialsResponse = await getAuthorizationHeader();
+    if (credentialsResponse is Fail) {
+      return Fail(errorMessage: credentialsResponse.message!);
+    }
+
+    var credentials = credentialsResponse.data!;
+
+    var headers = {"Content-Type": "application/json"};
+    headers.addAll(credentials);
+    var url = Uri.parse("$serverIP/user/search/");
+
+    var body = json.encode(query.toJson()).toString();
+
+    http.Response response;
+
+    try {
+      response = await http.post(url, headers: headers, body: body);
+    } catch (e) {
+      return Fail(errorMessage: e.toString());
+    }
+
+    int statusCode = response.statusCode;
+
+    if (statusCode == 200) {
+      var json = jsonDecode(response.body);
+      SearchResult result = SearchResult.fromJson(json);
+
+      return Success(successData: result);
+    } else {
+      if (statusCode == 403) {
+        return Fail(errorMessage: response.body);
       }
 
       return Fail(errorMessage: "Unexpected error");

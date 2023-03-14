@@ -135,3 +135,20 @@ const MaterialColor purpleAppColor = MaterialColor(
   },
 );
 const int _purpleAppColor = 0xFF957EBA;
+
+const MaterialColor darkCard = MaterialColor(
+  _darkCard,
+  <int, Color>{
+    50: Color(0xFF17212B),
+    100: Color(0xFF17212B),
+    200: Color(0xFF17212B),
+    300: Color(0xFF17212B),
+    400: Color(0xFF17212B),
+    500: Color(0xFF17212B),
+    600: Color(0xFF17212B),
+    700: Color(0xFF17212B),
+    800: Color(0xFF17212B),
+    900: Color(0xFF17212B),
+  },
+);
+const int _darkCard = 0xFF17212B;

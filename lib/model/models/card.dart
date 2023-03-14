@@ -1,10 +1,12 @@
 class Card {
+  int id;
   String question;
   String? questionImageUrl;
   String? answer;
   List<String>? answerImageUrls;
 
   Card({
+    required this.id,
     required this.question,
     this.questionImageUrl,
     this.answer,
@@ -33,6 +35,7 @@ class Card {
     }
 
     return Card(
+      id: json["card_id"] as int,
       question: json["question_text"] as String,
       questionImageUrl: questionImage,
       answer: answer,

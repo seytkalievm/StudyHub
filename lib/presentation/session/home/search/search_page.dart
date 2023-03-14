@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../widgets/folder_view.dart';
+import '../../deck_preview/deck_preview.dart';
 import 'search_controller.dart';
 import 'package:get/get.dart';
 import '../../../util/color_codes.dart';
@@ -13,9 +15,66 @@ class SearchPage extends StatelessWidget {
     return GetBuilder<SearchController>(builder: (controller) {
       return Scaffold(
         body: SafeArea(
-          child: ListView(
-            children: <Widget>[
-              _searchBar(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: selectedMenuColor,
+                    ),
+                  ),
+                  _searchBar(controller),
+                ],
+              ),
+              Expanded(
+                child: controller.hasResults
+                    ? ListView(
+                        children: [
+                          Obx(
+                            () => ListView.builder(
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: controller.folders.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return FolderView(
+                                  folder: controller.folders[index],
+                                );
+                              },
+                            ),
+                          ),
+                          Obx(
+                            () => ListView.builder(
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: controller.decks.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return DeckPreview(
+                                  deck: controller.decks[index],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+                    : const Center(
+                        child: Text(
+                          "No results",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                            color: selectedMenuColor,
+                          ),
+                        ),
+                      ),
+              ),
             ],
           ),
         ),
@@ -23,21 +82,16 @@ class SearchPage extends StatelessWidget {
     });
   }
 
-  Widget _searchBar() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: SizedBox(
+  Widget _searchBar(SearchController controller) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.only(right: 20, top: 6),
         height: 48,
         child: TextField(
-          onChanged: (value) => {},
+          //controller: controller,
           decoration: const InputDecoration(
             filled: true,
             fillColor: mainAppColor,
-            contentPadding: EdgeInsets.all(0),
-            prefixIcon: Icon(
-              Icons.search,
-              color: greySecondary,
-            ),
             border: OutlineInputBorder(borderSide: BorderSide.none),
             hintStyle: TextStyle(fontSize: 16, color: unselectedTabColor),
             hintText: "Search for a deck or course",
@@ -45,6 +99,11 @@ class SearchPage extends StatelessWidget {
           ),
           style: const TextStyle(fontSize: 18, color: greySecondary),
           cursorColor: greySecondary,
+          textInputAction: TextInputAction.search,
+          onSubmitted: (value) {
+            debugPrint(value);
+            controller.search(value);
+          },
         ),
       ),
     );

@@ -16,4 +16,6 @@ abstract class AuthRepository {
   Resource<int> logout();
 
   Future<Resource<String>> refresh();
+
+  Future<Resource<Token>> loginWithIU({required String code});
 }

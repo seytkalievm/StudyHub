@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:study_hub/common/constants.dart';
@@ -105,5 +106,39 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       return Fail(errorMessage: e.toString());
     }
+  }
+
+  @override
+  Future<Resource<Token>> loginWithIU({
+    required String code,
+  }) async {
+    var url = Uri.parse("$serverIP/auth/login/iu/");
+    var body = jsonEncode({
+      "redirect_uri": redirectUri,
+      "code": code,
+    }).toString();
+
+    http.Response response;
+
+    try {
+      response = await http.post(url, headers: headers, body: body);
+    } catch (e) {
+      debugPrint(e.toString());
+
+      return Fail(errorMessage: e.toString());
+    }
+
+    if (response.statusCode == 200) {
+      var token = Token.fromJson(json.decode(response.body));
+      getStorage.write("access", token.accessToken);
+      getStorage.write("refresh", token.refreshToken);
+
+      debugPrint(token.toString());
+
+      return Success(successData: token);
+    }
+    debugPrint(response.body);
+
+    return Fail(errorMessage: response.body);
   }
 }

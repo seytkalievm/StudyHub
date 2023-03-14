@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:study_hub/model/models/deck.dart';
 import 'package:study_hub/presentation/session/deck_preview/deck_preview_controller.dart';
 import '../../util/color_codes.dart';
+import '../deck_view/deck_view_page.dart';
 
 class DeckPreview extends StatelessWidget {
   final Deck deck;
@@ -13,23 +14,14 @@ class DeckPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.lazyPut<DeckPreviewController>(() => DeckPreviewController());
 
-    void showSnackBar(String message) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          duration: const Duration(milliseconds: 800),
-        ),
-      );
-    }
-
     return GetBuilder<DeckPreviewController>(builder: (controller) {
       return GestureDetector(
         onTap: () {
-          //TODO: navigate to DeckPage
+          Get.to(() => DeckViewPage(deck: deck));
         },
         child: Container(
           decoration: BoxDecoration(
-            color: mainAppColor,
+            color: darkCard,
             borderRadius: BorderRadius.circular(3),
           ),
           margin: const EdgeInsets.only(
@@ -64,25 +56,23 @@ class DeckPreview extends StatelessWidget {
                   Expanded(
                     child: Container(),
                   ),
+                  // IconButton(
+                  //   onPressed: () {
+                  //     //TODO
+                  //   },
+                  //   padding: const EdgeInsets.only(right: 15, bottom: 10),
+                  //   constraints: const BoxConstraints(),
+                  //   icon: SvgPicture.asset(
+                  //     "assets/icons/deck_preview/duplicate.svg",
+                  //   ),
+                  // ),
                   IconButton(
+                    padding: const EdgeInsets.only(right: 15, bottom: 10),
+                    constraints: const BoxConstraints(),
                     onPressed: () {
-                      //TODO
-                    },
-                    padding: const EdgeInsets.only(right: 15, bottom: 10),
-                    constraints: const BoxConstraints(),
-                    icon: SvgPicture.asset(
-                      "assets/icons/deck_preview/duplicate.svg",
-                    ),
-                  ),
-                  IconButton(
-                    padding: const EdgeInsets.only(right: 15, bottom: 10),
-                    constraints: const BoxConstraints(),
-                    onPressed: () async {
                       deck.isFavourite
-                          ? await controller.removeDeckFromFavourites(deck)
-                          : await controller.addDeckToFavourites(deck);
-
-                      showSnackBar(controller.result);
+                          ? controller.removeDeckFromFavourites(deck)
+                          : controller.addDeckToFavourites(deck);
                     },
                     icon: SvgPicture.asset(
                       deck.isFavourite

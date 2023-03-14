@@ -9,17 +9,21 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut<SettingsController>(() => SettingsController());
-
     return GetBuilder<SettingsController>(builder: (controller) {
       return Scaffold(
         body: Center(
-          child: ThemedMaterialButton(
-            text: "Logout",
-            callback: () {
-              controller.logout();
-            },
-            color: selectedTabColor,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ThemedMaterialButton(
+                text: "Logout",
+                callback: () {
+                  controller.logout();
+                },
+                color: selectedTabColor,
+              ),
+            ],
           ),
         ),
       );

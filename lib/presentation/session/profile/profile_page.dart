@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'favourites/favourites_page.dart';
 import 'my_decks/my_deck_page.dart';
 import 'settings/setting_page.dart';
 import '../../util/color_codes.dart';
-import 'history/history_page.dart';
 import 'profile_controller.dart';
 
 class ProfilePage extends GetView<ProfileController> {
@@ -11,8 +11,6 @@ class ProfilePage extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProfileController());
-
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: SafeArea(
@@ -25,8 +23,9 @@ class ProfilePage extends GetView<ProfileController> {
             //isScrollable: true,
             tabs: const [
               //Tab(text: 'Groups'),
+              Tab(text: "Favourites"),
               Tab(text: "My Decks"),
-              Tab(text: 'History'),
+              //Tab(text: 'History'),
               //Tab(text: 'Notifications'),
               Tab(text: 'Settings'),
             ],
@@ -37,8 +36,9 @@ class ProfilePage extends GetView<ProfileController> {
         controller: controller.tabController,
         children: const <Widget>[
           //GroupsPage(),
+          FavouritesPage(),
           MyDecksPage(),
-          HistoryPage(),
+          //HistoryPage(),
           //NotificationsPage(),
           SettingsPage(),
         ],

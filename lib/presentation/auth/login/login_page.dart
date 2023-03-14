@@ -49,8 +49,9 @@ class LoginPage extends StatelessWidget {
                 _loginButton(controller, showSnackBar),
                 _registerButton(),
                 const ThemedDivider(),
-                ContinueWithUIButton(callback: () {
-                  //TODO
+                ContinueWithUIButton(callback: () async {
+                  debugPrint("Hello");
+                  controller.loginWithIU();
                 }),
               ],
             ),

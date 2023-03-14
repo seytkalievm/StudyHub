@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'single_card_controller.dart';
 import '../../../../model/models/create_card.dart';
 import '../../../util/color_codes.dart';
-import '../../../util/fullscreen_image.dart';
+import '../../../widgets/fullscreen_image_create.dart';
 
 class SingleCardView extends StatelessWidget {
   final CreateCard card;
@@ -199,7 +199,7 @@ class SingleCardView extends StatelessWidget {
             ),
             child: GestureDetector(
               onTap: () {
-                Get.to(() => FullscreenImage(
+                Get.to(() => FullscreenImageCreate(
                       card: card,
                       isQuestion: isQuestion,
                       index: i,

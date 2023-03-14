@@ -1,16 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:study_hub/model/models/create_deck.dart';
-import 'package:study_hub/presentation/session/create/create_card/add_cards_controller.dart';
+import 'upload_from_sheet/upload_from_sheet_page.dart';
+import 'create_card/add_cards_controller.dart';
+import 'upload_from_sheet/upload_from_sheet_controller.dart';
+import '../../../domain/use_case/deck/get_folder_list_use_case.dart';
+import '../../../model/models/folder.dart';
 import 'create_card/add_cards.dart';
 
 class CreateDeckController extends GetxController {
+  RxList<Folder> folderList = RxList([Folder(id: 1, name: "math")]);
+
   CreateDeckController() {
-    courseNameController.addListener(() {
-      _courseName = courseNameController.text.toString();
-      courseNameError = null;
-      update();
-    });
+    folderList = GetFolderListUseCase.invoke();
 
     deckNameController.addListener(() {
       _deckName = deckNameController.text.toString();
@@ -25,8 +27,8 @@ class CreateDeckController extends GetxController {
     });
   }
 
-  String _courseName = "";
   String? courseNameError;
+  Folder folder = Folder(id: -1, name: "Course name");
 
   String _deckName = "";
   String? deckNameError;
@@ -42,8 +44,8 @@ class CreateDeckController extends GetxController {
       TextEditingController();
 
   void _validateCourseName() {
-    if (_courseName.isEmpty) {
-      courseNameError = "Field cannot be empty";
+    if (folder.id == -1) {
+      courseNameError = "Please choose course";
       canProceed = false;
     }
   }
@@ -75,7 +77,7 @@ class CreateDeckController extends GetxController {
     }
   }
 
-  void createCards() {
+  void createCards(bool toSheet) {
     debugPrint("CreateController, createCards: entered createCards");
     canProceed = true;
     _validateCourseName();
@@ -87,12 +89,20 @@ class CreateDeckController extends GetxController {
       return;
     }
     var deck = CreateDeck(
-      folderId: 2,
+      folderId: folder.id,
       deckName: _deckName,
       semester: _materialSemester,
     );
-    Get.lazyPut<AddCardsController>(() => AddCardsController(deck));
-    Get.to(() => const AddCardsPage());
+    if (toSheet) {
+      Get.lazyPut<UploadFromSheetController>(
+        () => UploadFromSheetController(deck),
+      );
+      Get.to(() => const UploadFromSheetPage());
+    } else {
+      Get.lazyPut<AddCardsController>(() => AddCardsController(deck));
+      Get.to(() => const AddCardsPage());
+    }
+
     update();
   }
 }
