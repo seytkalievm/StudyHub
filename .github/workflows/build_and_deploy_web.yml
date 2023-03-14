@@ -1,17 +1,10 @@
-name: Build
+name: Web deploy
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-    branches:
-      - main
-      - dev
+on: [push, workflow_dispatch]
 
 jobs:
   build_web:
-    name: Build web
+    name: Build and deploy web
     runs-on: ubuntu-latest
     env:
       SSH_USER: ${{ secrets.SSH_USER }}
