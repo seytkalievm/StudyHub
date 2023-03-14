@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../util/color_codes.dart';
@@ -51,6 +52,8 @@ class OutlinedTextField extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+      height: kIsWeb ? 44 : null,
+      width: kIsWeb ? 320 : null,
       child: TextFormField(
         controller: textFieldController,
         style: const TextStyle(color: selectedMenuColor),

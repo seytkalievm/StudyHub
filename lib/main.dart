@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:study_hub/presentation/main_controller.dart';
+import '../../../presentation/main_controller.dart';
 import 'presentation/main_binding.dart';
 import 'presentation/util/app_pages.dart';
 import 'presentation/util/color_codes.dart';

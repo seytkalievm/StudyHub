@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:study_hub/model/repository/auth_repository.dart';
+import '../../../../model/repository/auth_repository.dart';
 import '../../../util/routes.dart';
 
 class SettingsController extends GetxController {

@@ -1,17 +1,20 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'single_card_controller.dart';
+
 import '../../../../model/models/create_card.dart';
 import '../../../util/color_codes.dart';
 import '../../../widgets/fullscreen_image_create.dart';
+import 'single_card_controller.dart';
 
 class SingleCardView extends StatelessWidget {
   final CreateCard card;
   final int index;
   final Function(CreateCard) delete;
+
   const SingleCardView({
     required this.card,
     Key? key,

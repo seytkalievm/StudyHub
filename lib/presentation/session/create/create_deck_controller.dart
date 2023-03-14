@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:study_hub/model/models/create_deck.dart';
+import '../../../model/models/create_deck.dart';
 import 'upload_from_sheet/upload_from_sheet_page.dart';
 import 'create_card/add_cards_controller.dart';
 import 'upload_from_sheet/upload_from_sheet_controller.dart';

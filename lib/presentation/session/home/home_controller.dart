@@ -10,8 +10,8 @@ class HomeController extends GetxController
   @override
   void onInit() {
     tabController = TabController(vsync: this, length: 2);
-    Get.put<RecentController>(RecentController(), permanent: true);
-    Get.put<ForYouController>(ForYouController(), permanent: true);
+    Get.put<RecentController>(RecentController());
+    Get.put<ForYouController>(ForYouController());
 
     super.onInit();
   }

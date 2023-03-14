@@ -18,6 +18,7 @@ class ThemedMaterialButton extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 30, 20, 0),
       height: 44,
+      width: 320,
       child: MaterialButton(
         onPressed: callback,
         color: color,

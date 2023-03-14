@@ -1,11 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:study_hub/presentation/widgets/themed_material_button.dart';
+import 'package:study_hub/presentation/util/do_nothing_callback.dart';
+import '../../../presentation/widgets/themed_material_button.dart';
+import '../../util/color_codes.dart';
+import '../../widgets/continue_with_ui_button.dart';
 import '../../widgets/divider.dart';
 import '../../widgets/outlined_text_field.dart';
-import '../../widgets/continue_with_ui_button.dart';
 import 'register_controller.dart';
-import '../../util/color_codes.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -33,40 +35,95 @@ class RegisterPage extends StatelessWidget {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: SafeArea(
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/register_page.png"),
-                  alignment: Alignment.centerRight,
-                ),
-              ),
-              child: ListView(
-                children: <Widget>[
-                  _heading(),
-                  OutlinedTextField(
-                    label: "Email",
-                    prefixIconData: Icons.email_outlined,
-                    textFieldController: controller.emailController,
-                    inputType: TextInputType.emailAddress,
-                    error: controller.emailError,
+            child: kIsWeb
+                ? SingleChildScrollView(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          height: 601,
+                          width: 333,
+                          margin:
+                              const EdgeInsets.only(top: 102.0, bottom: 103.0),
+                          child: Column(
+                            children: <Widget>[
+                              _webHeading(),
+                              const SizedBox(
+                                height: 87,
+                              ),
+                              OutlinedTextField(
+                                label: "Email",
+                                prefixIconData: Icons.email_outlined,
+                                textFieldController: controller.emailController,
+                                inputType: TextInputType.emailAddress,
+                                error: controller.emailError,
+                              ),
+                              OutlinedTextField(
+                                label: "Full name",
+                                assetName:
+                                    "assets/icons/bottom_bar/profile_bottom_bar_ic_no_notification.svg",
+                                textFieldController:
+                                    controller.fullNameController,
+                                error: controller.fullNameError,
+                              ),
+                              _passwordFormField(controller: controller),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              _registerButton(controller, showSnackBar),
+                              _loginButton(),
+                              const SizedBox(
+                                height: 18,
+                              ),
+                              const ThemedDivider(),
+                              ContinueWithUIButton(callback: () {
+                                controller.loginWithIU();
+                              }),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 114,
+                        ),
+                        _webImageBackground(),
+                      ],
+                    ),
+                  )
+                : Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/register_page.png"),
+                        alignment: Alignment.centerRight,
+                      ),
+                    ),
+                    child: ListView(
+                      children: <Widget>[
+                        _heading(),
+                        OutlinedTextField(
+                          label: "Email",
+                          prefixIconData: Icons.email_outlined,
+                          textFieldController: controller.emailController,
+                          inputType: TextInputType.emailAddress,
+                          error: controller.emailError,
+                        ),
+                        OutlinedTextField(
+                          label: "Full name",
+                          assetName:
+                              "assets/icons/bottom_bar/profile_bottom_bar_ic_no_notification.svg",
+                          textFieldController: controller.fullNameController,
+                          error: controller.fullNameError,
+                        ),
+                        _passwordFormField(controller: controller),
+                        _registerButton(controller, showSnackBar),
+                        _loginButton(),
+                        const ThemedDivider(),
+                        ContinueWithUIButton(callback: () {
+                          controller.loginWithIU();
+                        }),
+                      ],
+                    ),
                   ),
-                  OutlinedTextField(
-                    label: "Full name",
-                    assetName:
-                        "assets/icons/bottom_bar/profile_bottom_bar_ic_no_notification.svg",
-                    textFieldController: controller.fullNameController,
-                    error: controller.fullNameError,
-                  ),
-                  _passwordFormField(controller: controller),
-                  _registerButton(controller, showSnackBar),
-                  _loginButton(),
-                  const ThemedDivider(),
-                  ContinueWithUIButton(callback: () {
-                    controller.loginWithIU();
-                  }),
-                ],
-              ),
-            ),
           ),
         ),
       );
@@ -86,6 +143,34 @@ class RegisterPage extends StatelessWidget {
             fontFamily: "Roboto",
             fontWeight: FontWeight.w600,
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _webImageBackground() {
+    return Container(
+      height: 601,
+      width: 290,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/register_page.png"),
+          alignment: Alignment.centerRight,
+        ),
+      ),
+    );
+  }
+
+  Widget _webHeading() {
+    return const Align(
+      alignment: Alignment.topLeft,
+      child: Text(
+        "Create Account",
+        style: TextStyle(
+          color: selectedMenuColor,
+          fontSize: 48,
+          fontFamily: "Roboto",
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -142,7 +227,7 @@ class RegisterPage extends StatelessWidget {
         height: 44,
         child: MaterialButton(
           onPressed: () {
-            //TODO
+            doNothing();
           },
           child: const CircularProgressIndicator(),
         ),

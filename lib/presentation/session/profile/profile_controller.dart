@@ -10,9 +10,10 @@ class ProfileController extends GetxController
 
   @override
   void onInit() {
-    Get.put<MyDecksController>(MyDecksController(), permanent: true);
-    Get.put<SettingsController>(SettingsController(), permanent: true);
-    Get.put<FavouritesController>(FavouritesController(), permanent: true);
+    Get.put<MyDecksController>(MyDecksController());
+    Get.put<SettingsController>(SettingsController());
+    Get.put<FavouritesController>(FavouritesController());
+    //TODO Controllers for new pages
 
     tabController = TabController(vsync: this, length: 3);
     super.onInit();

@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:study_hub/model/models/folder.dart';
+import '../../../model/models/folder.dart';
 import '../../../model/repository/cached_repository.dart';
 
 class GetFolderListUseCase {

@@ -1,8 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:study_hub/model/models/deck.dart';
-import 'package:study_hub/model/models/folder.dart';
-import 'package:study_hub/model/repository/cached_repository.dart';
-import 'package:study_hub/model/repository/deck_repository.dart';
+import '../../../model/models/deck.dart';
+import '../../../model/models/folder.dart';
+import '../../../model/repository/cached_repository.dart';
+import '../../../model/repository/deck_repository.dart';
 import '../../../model/models/resource.dart';
 
 class CachedRepoImpl implements CachedRepository {
@@ -33,6 +34,11 @@ class CachedRepoImpl implements CachedRepository {
         temp.isFavourite = true;
       }
     }
+    for (var temp in _recentDecks) {
+      if (temp.id == deck.id) {
+        temp.isFavourite = true;
+      }
+    }
   }
 
   @override
@@ -48,6 +54,11 @@ class CachedRepoImpl implements CachedRepository {
       if (temp.id == deck.id) {
         temp.isFavourite = false;
         break;
+      }
+    }
+    for (var temp in _recentDecks) {
+      if (temp.id == deck.id) {
+        temp.isFavourite = false;
       }
     }
   }
@@ -84,6 +95,27 @@ class CachedRepoImpl implements CachedRepository {
       for (var folder in response.data!) {
         _folderList.add(folder);
       }
+    }
+  }
+
+  @override
+  void logDeck({required Deck deck}) {
+    if (_recentDecks.contains(deck)) {
+      _recentDecks.remove(deck);
+    }
+    _recentDecks.insert(0, deck);
+  }
+
+  @override
+  Future<void> updateRecent() async {
+    var response = await remote.getRecent();
+    if (response is Success) {
+      debugPrint(response.data.toString());
+      for (var deck in response.data!) {
+        _recentDecks.add(deck);
+      }
+    } else {
+      debugPrint(response.message);
     }
   }
 }

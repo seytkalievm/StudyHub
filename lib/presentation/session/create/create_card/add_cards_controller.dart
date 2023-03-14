@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:study_hub/model/models/create_card.dart';
-import 'package:study_hub/model/models/create_deck.dart';
-import 'package:study_hub/model/models/resource.dart';
+import '../../../../model/models/create_card.dart';
+import '../../../../model/models/create_deck.dart';
+import '../../../../model/models/resource.dart';
 import '../../../../domain/use_case/deck/create_deck_use_case.dart';
 import '../../../util/color_codes.dart';
 

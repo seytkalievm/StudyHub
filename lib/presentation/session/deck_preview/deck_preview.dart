@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:study_hub/model/models/deck.dart';
-import 'package:study_hub/presentation/session/deck_preview/deck_preview_controller.dart';
+import '../../../model/models/deck.dart';
+import 'deck_preview_controller.dart';
+import '../../../domain/use_case/deck/log_deck_use_case.dart';
 import '../../util/color_codes.dart';
 import '../deck_view/deck_view_page.dart';
 
@@ -12,11 +13,14 @@ class DeckPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut<DeckPreviewController>(() => DeckPreviewController());
+    Get.put<DeckPreviewController>(DeckPreviewController());
 
     return GetBuilder<DeckPreviewController>(builder: (controller) {
+      deck.folderName.isEmpty ? controller.setCourseName(deck) : null;
+
       return GestureDetector(
         onTap: () {
+          LogDeckUseCase.invoke(deck);
           Get.to(() => DeckViewPage(deck: deck));
         },
         child: Container(
@@ -42,7 +46,7 @@ class DeckPreview extends StatelessWidget {
                   ],
                 ),
               ),
-              _courseName(),
+              _courseName(deck.folderName),
               const Divider(
                 thickness: 1,
                 indent: 16,
@@ -120,12 +124,12 @@ class DeckPreview extends StatelessWidget {
     );
   }
 
-  Widget _courseName() {
+  Widget _courseName(String name) {
     return Container(
       alignment: Alignment.centerLeft,
       margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
       child: Text(
-        deck.folderName,
+        name,
         style: const TextStyle(
           color: greySecondary,
           fontSize: 14,

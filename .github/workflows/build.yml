@@ -1,0 +1,125 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    branches:
+      - main
+      - dev
+
+jobs:
+  wait:
+    name: Wait for checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for checks to succeed
+        uses: fountainhead/action-wait-for-check@v1.1.0
+        id: wait-for-check
+        with:
+          token: ${{ secrets.TOKEN }}
+          checkName: Conclusion
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          intervalSeconds: 60
+          timeoutSeconds: 1000
+
+  build_apk:
+    needs: wait
+    if: success()
+    name: Build apk
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Get packages in a Flutter project
+        run: flutter pub get
+      - name: Clean
+        run: flutter clean
+      - name: Build APK
+        run: flutter build apk --no-sound-null-safety --dart-define=API_KEY=${{secrets.API_KEY}}
+      - name: Upload APK
+        uses: actions/upload-artifact@master
+        with:
+          name: apk-build
+          path: build/app/outputs/apk/release
+
+  build_web:
+    needs: wait
+    if: success()
+    name: Build web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Get packages in a Flutter project
+        run: flutter pub get
+      - name: Clean
+        run: flutter clean
+      - name: Build web
+        run: flutter build web --web-renderer html --dart-define=API_KEY=${{secrets.API_KEY}}
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: web-build
+          path: build/web
+
+  build_ios:
+    needs: wait
+    if: success()
+    name: Build ios
+    runs-on: macOS-12
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+      - name: Install java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Get packages in a Flutter project
+        run: flutter pub get
+      - name: Clean
+        run: flutter clean
+      - name: Build ios
+        run: flutter build ios --release --no-codesign --dart-define=API_KEY=${{secrets.API_KEY}}
+      - name: Upload iPA
+        uses: actions/upload-artifact@master
+        with:
+          name: ios-build
+          path: build/ios/iphoneos
+
+  report:
+    needs: [build_apk, build_ios, build_web]
+    name: Send report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send telegram message on build failure
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_ID }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            Repository: ${{ github.repository }}
+            Push to main branch
+
+            APK build result: ${{needs.build_apk.result}}
+            iOS build result: ${{needs.build_ios.result}}
+            Web build result: ${{needs.build_web.result}}
+            
+            ${{ github.actor }} created commit:
+            Commit message: ${{ github.event.commits[0].message }}
+            
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}

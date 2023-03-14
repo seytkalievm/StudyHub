@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:study_hub/model/repository/deck_repository.dart';
+import '../../../model/repository/deck_repository.dart';
 import '../../../model/models/deck.dart';
 import '../../../model/repository/cached_repository.dart';
 

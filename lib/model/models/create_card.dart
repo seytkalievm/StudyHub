@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:study_hub/presentation/session/create/create_card/add_cards_controller.dart';
+import '../../../presentation/session/create/create_card/add_cards_controller.dart';
 
 class CreateCard {
   String _question = "";

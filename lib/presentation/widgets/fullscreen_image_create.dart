@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:study_hub/model/models/create_card.dart';
+import '../../../model/models/create_card.dart';
 
 class FullscreenImageCreate extends StatelessWidget {
   const FullscreenImageCreate({

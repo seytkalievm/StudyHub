@@ -11,14 +11,11 @@ import 'session_controller.dart';
 class SessionBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<SessionController>(() => SessionController(), fenix: true);
-    Get.lazyPut<HomeController>(() => HomeController(), fenix: true);
-    Get.lazyPut<ProfileController>(() => ProfileController(), fenix: true);
-    Get.lazyPut<CreateDeckController>(
-      () => CreateDeckController(),
-      fenix: true,
-    );
+    Get.lazyPut<SessionController>(() => SessionController());
+    Get.lazyPut<HomeController>(() => HomeController());
+    Get.lazyPut<ProfileController>(() => ProfileController());
+    Get.lazyPut<CreateDeckController>(() => CreateDeckController());
     Get.put<DeckRepository>(DeckRepositoryImpl());
-    Get.put<CachedRepository>(CachedRepoImpl(), permanent: true);
+    Get.put<CachedRepository>(CachedRepoImpl());
   }
 }

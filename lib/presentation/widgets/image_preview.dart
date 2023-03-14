@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:study_hub/presentation/util/color_codes.dart';
+import '../../../presentation/util/color_codes.dart';
 import 'fullscreen_image.dart';
 
 Widget imagePreview(String url, double height) {

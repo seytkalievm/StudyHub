@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:study_hub/model/models/resource.dart';
-import 'package:study_hub/model/models/search_query.dart';
+import '../../../../model/models/resource.dart';
+import '../../../../model/models/search_query.dart';
 import '../../../../model/models/deck.dart';
 import '../../../../model/models/folder.dart';
 import '../../../../model/repository/deck_repository.dart';

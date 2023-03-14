@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'recent/recent_page.dart';
@@ -13,17 +14,23 @@ class HomePage extends StatelessWidget {
     return GetBuilder<HomeController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
+          elevation: kIsWeb ? 0.0 : null,
+          backgroundColor: kIsWeb ? backgroundDarkBlue : mainAppColor,
           flexibleSpace: SafeArea(
-            child: TabBar(
-              controller: controller.tabController,
-              labelColor: selectedTabColor,
-              unselectedLabelColor: unselectedTabColor,
-              indicatorColor: selectedTabColor,
-              indicatorSize: TabBarIndicatorSize.label,
-              tabs: const [
-                Tab(text: 'For You'),
-                Tab(text: 'Recent'),
-              ],
+            child: Container(
+              margin: kIsWeb ? const EdgeInsets.only(left: 105) : null,
+              child: TabBar(
+                isScrollable: kIsWeb ? true : false,
+                controller: controller.tabController,
+                labelColor: selectedTabColor,
+                unselectedLabelColor: unselectedTabColor,
+                indicatorColor: selectedTabColor,
+                indicatorSize: TabBarIndicatorSize.label,
+                tabs: const [
+                  Tab(text: 'For You'),
+                  Tab(text: 'Recent'),
+                ],
+              ),
             ),
           ),
         ),

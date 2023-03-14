@@ -1,4 +1,4 @@
-import 'package:study_hub/model/models/tokens.dart';
+import '../../../model/models/tokens.dart';
 import '../models/resource.dart';
 
 abstract class AuthRepository {

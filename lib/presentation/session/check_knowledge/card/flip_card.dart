@@ -1,7 +1,8 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:study_hub/presentation/util/color_codes.dart';
+import '../../../../presentation/util/color_codes.dart';
 import '../../../../model/models/card.dart' as c;
 import '../../../widgets/image_preview.dart';
 import 'flip_card_controller.dart';
@@ -44,7 +45,7 @@ class FlipCard extends StatelessWidget {
 
   Widget _front() {
     return Container(
-      height: 350,
+      height: kIsWeb ? 550 : 350,
       width: double.infinity,
       decoration: BoxDecoration(
         color: darkCard,
@@ -87,7 +88,7 @@ class FlipCard extends StatelessWidget {
       alignment: Alignment.center,
       transform: Matrix4.identity()..rotateY(pi),
       child: Container(
-        height: 350,
+        height: kIsWeb ? 550 : 350,
         width: double.infinity,
         decoration: BoxDecoration(
           color: darkCard,
@@ -96,7 +97,7 @@ class FlipCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (card.answer != null)
+            if (card.answer != null && card.answer!.isNotEmpty)
               Expanded(
                 child: Center(
                   child: SingleChildScrollView(
